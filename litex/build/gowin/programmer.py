@@ -43,10 +43,7 @@ class GowinProgrammer(GenericProgrammer):
         if self.is_wsl or self.is_win32:
             self.programmer += ".exe"
 
-            gw_dir = which(self.programmer)
-            if gw_dir is not None:
-                gw_dir = os.path.dirname(gw_dir)
-                os.chdir(gw_dir)
+        self.gw_dir = which(self.programmer)
 
     # follow the help information:
     #  1. Gowin programmer does not support start address for embflash! 
@@ -68,7 +65,7 @@ class GowinProgrammer(GenericProgrammer):
         if self.is_wsl is True and fifile is not None:
             fifile = os.popen("wslpath -w {}".format(fifile)).read().strip("\n")
 
-        cmd_line = [self.programmer, 
+        cmd_line = [self.gw_dir, 
                 "--spiaddr", str(address),
                 "--device", str(self.device)]
 
@@ -90,7 +87,7 @@ class GowinProgrammer(GenericProgrammer):
         if self.is_wsl is True:
             bitfile = os.popen("wslpath -w {}".format(bitstream_file)).read().strip("\n")
             
-        cmd_line = [self.programmer,
+        cmd_line = [self.gw_dir,
             "--device", str(self.device),
             "--fsFile", str(bitfile),
             "--cable-index", str(cable),
